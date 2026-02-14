@@ -2,11 +2,11 @@
 
 /* here will go the warnings, the signs, the setups of the file, etc... */
 #ifndef __KWPACK__
-#warning Please, include "kwpack.h" in order to use "bFactory.h".
+#warning Please, include "kwpack.h" in order to use "binfactory.h".
 #else
 
 #define _XSC_BINARY_FUNCTIONS
-#define _XSC_BINARYFUNCTIONS /* [ALT] */
+#define _XSC_BINARYFUNCTIONS
 
 #include <super/stdbasic.h>
 
@@ -109,4 +109,5 @@ int popcount64(int64_t _Bin) {
 
 #endif /* __KWPACK__ */
 #endif /* _XSC_BINARY_FUNCTIONS */
+
 
