@@ -49,10 +49,10 @@ inline int SetBit(size_t _Val, unsigned int _BitPos) {
 #if COMPILER_GCCCLANG == FALSE
 
 uint32_t BinRev(uint32_t _Bin) {
-    _Bin = ((_Bin >> 1) & 0x55555555) | ((x & 0x55555555) << 1);
-    _Bin = ((_Bin >> 2) & 0x33333333) | ((x & 0x33333333) << 2);
-    _Bin = ((_Bin >> 4) & 0x0F0F0F0F) | ((x & 0x0F0F0F0F) << 4);
-    _Bin = ((_Bin >> 8) & 0x00FF00FF) | ((x & 0x00FF00FF) << 8);
+    _Bin = ((_Bin >> 1) & 0x55555555) | ((_Bin & 0x55555555) << 1);
+    _Bin = ((_Bin >> 2) & 0x33333333) | ((_Bin & 0x33333333) << 2);
+    _Bin = ((_Bin >> 4) & 0x0F0F0F0F) | ((_Bin & 0x0F0F0F0F) << 4);
+    _Bin = ((_Bin >> 8) & 0x00FF00FF) | ((_Bin & 0x00FF00FF) << 8);
     _Bin = (_Bin >> 16) | (_Bin << 16);
     return _Bin;
 }
@@ -109,3 +109,4 @@ int popcount64(int64_t _Bin) {
 
 #endif /* __KWPACK__ */
 #endif /* _XSC_BINARY_FUNCTIONS */
+
