@@ -1,0 +1,3 @@
+#ifndef _XSC_SCMATH
+#include <super/scmath.h>
+#endif /* _XSC_SCMATH */

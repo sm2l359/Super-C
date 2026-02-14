@@ -1,0 +1,10 @@
+/**
+Fallback file
+**/
+
+/* [NOTE][REM] maybe i should take advantage and add some extra stuff in here. */
+/* ...and perhaps take usefulness in not just this but in other Fallback files */
+
+#ifndef __STDB_DEFINED
+#include <super/stdbasic.h>
+#endif

@@ -1,0 +1,884 @@
+#ifndef __DEBUGGER__
+#define __DEBUGGER__
+
+#include <super/stdbasic.h>
+
+/**
+    Package Name: debug / debug.h,
+    stands for "debugger".
+    General Purpose Package? yes-no;
+    Child-Package? no;
+    Experimental Package? kinda.
+**/
+
+#ifndef XSC_DEBUG_BY_STDB
+#define __INCOMPLETE_DEBUGGING
+#define XSC_DEBUG_BY_DBG
+#endif
+
+time_t _dbgClock;
+FILE* _dbgFile;
+
+#ifdef XSC_WINDOWS
+unsigned char _SettList = 0xD0;
+#else
+unsigned char _SettList = 0xF0;
+#endif
+
+#ifndef XSC_DEBUG_STARTUP_DEFINED
+#define XSC_DEBUG_STARTUP_DEFINED
+
+    #if XSCSET_DEBUG >= ENABLED || !defined(XSCSET_DEBUG)
+    xsc_destructor (103) void Debug_atexit(void);
+    xsc_constructor(104) void Debug_Runner(void);
+                         void Debug_Limits(void);
+                         void Debug_Config(void);
+                         void Debug_Settgs(void);
+
+    #else
+                         void Debug_atexit(void);
+                         void Debug_Runner(void);
+                         void Debug_Limits(void);
+                         void Debug_Config(void);
+                         void Debug_Settgs(void);
+    #endif
+
+
+#if defined(preprocessor_settings_X) || defined(preprocessor_settings_reset) || \
+    defined(preprocessor_settings_0) || defined(preprocessor_settings_1)
+#undef preprocessor_settings_X
+#undef preprocessor_settings_reset
+#undef XSCCONF_STDBASIC
+#undef XSCCONF_ANSI_ESCAPE
+#undef XSCCONF_USE_ANSI_ONLY
+#undef XSCCONF_STDCON_NOCLEANUP
+#undef XSCCONF_STDCON_NO_RETURN_CPOS
+#undef XSCCONF_DRAWS_BOUNDS
+#undef XSCCONF_ADVANCED_DRAWS
+#undef XSCCONF_EXCLUSIVE_HDR
+#undef XSCCONF_STDCON_AUTO_UPDATE
+#undef XSCCONF_SUPRESS_WARNINGS
+#undef XSCCONF_SHARED
+#undef XSCCONF_TYPEOF_MOD3
+#undef XSCCONF_STRINGS_STRCUT_MODIFY_ALL
+#undef XSCCONF_STDCON_UPDATE_COORDS
+#undef XSCCONF_SUPER_C_SPLASH_SCREEN
+#undef XSCCONF_ALT_SPELLINGS
+#undef XSCCONF_FUNCTION_ALT_SPELLINGS
+#undef XSCCONF_OPRPACK_ALT_SPELLINGS
+#undef XSCCONF_OPRPACK_ORIGINAL_NOT
+#undef XSCCONF_CUSTOM_SECTIONS
+#undef XSCCONF_CUSTOM_ATTRIBUTES
+#undef XSCCONF_CUSTOM_SCMATH_ATTRIBUTES
+#undef XSCCONF_CUSTOM_DRAWS_ATTRIBUTES
+#undef XSCCONF_CUSTOM_SPP_ATTRIBUTES
+#undef XSCCONF_READ_LICENSE
+
+
+#if defined(preprocessor_settings_0)
+#define XSCCONF_STDBASIC 0
+#define XSCCONF_ANSI_ESCAPE 0
+#define XSCCONF_USE_ANSI_ONLY 0
+#define XSCCONF_STDCON_NOCLEANUP 0
+#define XSCCONF_STDCON_NO_RETURN_CPOS 0
+#define XSCCONF_DRAWS_BOUNDS 0
+#define XSCCONF_ADVANCED_DRAWS 0
+#define XSCCONF_EXCLUSIVE_HDR 0
+#define XSCCONF_STDCON_AUTO_UPDATE 0
+#define XSCCONF_SUPRESS_WARNINGS 0
+#define XSCCONF_SHARED 0
+#define XSCCONF_TYPEOF_MOD3 0
+#define XSCCONF_STRINGS_STRCUT_MODIFY_ALL 0
+#define XSCCONF_STDCON_UPDATE_COORDS 0
+#define XSCCONF_SUPER_C_SPLASH_SCREEN 0
+#define XSCCONF_ALT_SPELLINGS 0
+#define XSCCONF_FUNCTION_ALT_SPELLINGS 0
+#define XSCCONF_OPRPACK_ALT_SPELLINGS 0
+#define XSCCONF_OPRPACK_ORIGINAL_NOT 0
+#define XSCCONF_CUSTOM_SECTIONS 0
+#define XSCCONF_CUSTOM_ATTRIBUTES 0
+#define XSCCONF_CUSTOM_SCMATH_ATTRIBUTES 0
+#define XSCCONF_CUSTOM_DRAWS_ATTRIBUTES 0
+#define XSCCONF_CUSTOM_SPP_ATTRIBUTES 0
+#define XSCCONF_READ_LICENSE 0
+
+#elif defined(preprocessor_settings_1)
+#define XSCCONF_STDBASIC 1
+#define XSCCONF_ANSI_ESCAPE 1
+#define XSCCONF_USE_ANSI_ONLY 1
+#define XSCCONF_STDCON_NOCLEANUP 1
+#define XSCCONF_STDCON_NO_RETURN_CPOS 1
+#define XSCCONF_DRAWS_BOUNDS 1
+#define XSCCONF_ADVANCED_DRAWS 1
+#define XSCCONF_EXCLUSIVE_HDR 1
+#define XSCCONF_STDCON_AUTO_UPDATE 1
+#define XSCCONF_SUPRESS_WARNINGS 1
+#define XSCCONF_SHARED 1
+#define XSCCONF_TYPEOF_MOD3 1
+#define XSCCONF_STRINGS_STRCUT_MODIFY_ALL 1
+#define XSCCONF_STDCON_UPDATE_COORDS 1
+#define XSCCONF_SUPER_C_SPLASH_SCREEN 1
+#define XSCCONF_ALT_SPELLINGS 1
+#define XSCCONF_FUNCTION_ALT_SPELLINGS 1
+#define XSCCONF_OPRPACK_ALT_SPELLINGS 1
+#define XSCCONF_OPRPACK_ORIGINAL_NOT 1
+#define XSCCONF_CUSTOM_SECTIONS 1
+#define XSCCONF_CUSTOM_ATTRIBUTES 1
+#define XSCCONF_CUSTOM_SCMATH_ATTRIBUTES 1
+#define XSCCONF_CUSTOM_DRAWS_ATTRIBUTES 1
+#define XSCCONF_CUSTOM_SPP_ATTRIBUTES 1
+#define XSCCONF_READ_LICENSE 1
+#else
+#include <super/stdbasic.h>
+#endif
+#endif
+
+#if COMPILER_HAS_CONSTRUCTOR <= DISABLED
+#undef InitSuper
+#define InitSuper ( _InitClock_(), _INIT_HEADERS, atexit(Debug_atexit) )
+#endif
+
+#endif /* XSC_DEBUG_STARTUP_DEFINED */
+
+#if defined(XSC_WINDOWS)
+
+HANDLE TMP_HANDLE;
+COORD TMP_COORD = {0};
+
+void __TEMP_CLEAR() {
+    TMP_HANDLE = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(TMP_HANDLE, TMP_COORD);
+    char* _gblst = (char*)calloc(120 * 30 +1, sizeof(char));
+    memset(_gblst, VK_SPACE, 120 * 30);
+    printf("%s", _gblst);
+    free(_gblst);
+    SetConsoleCursorPosition(TMP_HANDLE, TMP_COORD);
+}
+
+#elif defined(XSC_LINUX)
+
+void __TEMP_CLEAR(int _Sz) {
+
+    #if XSC_ANSI_ESCAPE <= DISABLED
+    system("clear");
+    #else
+
+    if(_Sz == NULL) _Sz = 120;
+    char* _shit = (char*)calloc(_Sz, sizeof(char));
+    memset(_shit, VK_SPACE, _Sz);
+    printf("\x1b[%d;%dH", 0, 0);
+    printf("%s", _shit);
+    printf("\x1b[%d;%dH", 0, 0);
+    free(_shit);
+
+    #endif
+}
+
+#elif defined(XSC_MAC)
+
+void __TEMP_CLEAR(int _Sz) {
+
+    #if XSC_ANSI_ESCAPE <= DISABLED
+    system("clear");
+    #else
+
+    if(_Sz == NULL) _Sz = 120;
+    char* _shit = (char*)calloc(_Sz, sizeof(char));
+    memset(_shit, VK_SPACE, _Sz);
+    printf("\x1b[%d;%dH", 0, 0);
+    printf("%s", _shit);
+    printf("\x1b[%d;%dH", 0, 0);
+    free(_shit);
+
+    #endif
+}
+#else
+void __TEMP_CLEAR(int _Sz) {
+#if DISABLED
+    char* _shit = (char*)calloc(_Sz, sizeof(char));
+    memset(_shit, VK_SPACE, _Sz);
+    printf("%s\r", _shit);
+    free(_shit);
+#endif
+}
+#endif
+
+#if XSC_ANSI_ESCAPE <= DISABLED
+    #undef clear
+    #define clear __TEMP_CLEAR()
+#endif
+
+#define _HASMGW COMPILER_HAS_MINGW
+
+/* use ONLY these for compatibility purposes */
+#if XSCCONF_ANSI_ESCAPE >= ENABLED /* added an extra layer of protection here. */
+#define __DEBUG_CLEAR() clear
+#else
+#define __DEBUG_CLEAR() sysclear
+#endif
+#define __DEBUG_GETCH() __STDB_GETCH
+
+/* [TODO] add a way of checking unix support later for unistd.h */
+#if defined(XSC_LINUX) || defined(XSC_MAC) || defined(__unix__) || \
+defined(XSC_BSD) || defined(COMPILER_HAS_MINGW)
+#define __DEBUG_SLEEP(_u_seconds) usleep(_u_seconds)
+#elif defined(XSC_WINDOWS)
+#define __DEBUG_SLEEP(_m_seconds) msleep(_m_seconds / 1000)
+#else
+#define __DEBUG_SLEEP(_x_seconds)
+#endif
+
+void Debug_atexit(void) {
+
+    if(OPT_DISABLE_OUTRO) {
+        goto _SKIP;
+    }
+
+    printf("%i", XSCCONF_ANSI_ESCAPE);
+    #if XSCCONF_ANSI_ESCAPE <= DISABLED
+    printf("\n[Program Finished] : ~%gs, at %s\n__________________________________________________\
+           \r\nCompiler Name/Used: %s / %s\n\
+           \rCompiler Version: %s\nOperating System: %s\nHas MinGW: %i",
+            (double)(clock() - _dbgClock) * 0.001, __TIME__,
+            COMPILER_NAME, COMPILER_USED, COMPILER_VERSION, XSC_OSNAME, _HASMGW
+            );
+    #else
+    printf("\n[Program Finished] : \x1b[32m~%gs\x1b[0m | at %s\x1b[0m\n__________________________________________________\
+           \r\nCompiler Name/Used: \x1b[35m%s / %s\x1b[0m\n\
+           \rCompiler Version: \x1b[33m%s\x1b[0m\nOperating System: \x1b%s%s\x1b[0m\nHas MinGW: \x1b%s%i\x1b[0m",
+            (double)(clock() - _dbgClock) * 0.001, __TIME__,
+            COMPILER_NAME, COMPILER_USED, COMPILER_VERSION,
+            XSC_OS == OsID_WINDOWS ? "[34m" :
+            XSC_OS == OsID_LINUX ? "[31m" :
+            XSC_OS == OsID_MAC ? "[33m" : "[0m", XSC_OSNAME, _HASMGW ? "[92m" : "[0m", _HASMGW);
+
+    #endif
+
+_SKIP:
+    if(OPT_OUTPUT_PRINT) {
+        fclose(_dbgFile);
+    }
+    __DEBUG_GETCH();
+}
+
+void _InitClock_(void) {
+    _dbgClock = clock();
+}
+
+void Debug_Runner(void) { /* initializes functions that are requested by macros. */
+
+    #if XSCCONF_ANSI_ESCAPE >= ENABLED
+    system("");
+    #endif
+
+    #if XSCSET_DEBUG == TRUE || preprocessor_settings_show == TRUE
+    Debug_Settgs();
+    #endif
+
+    #if XSCSET_DEBUG == TRUE
+    Debug_DetectHeader();
+
+    #endif
+
+    #if COMPILER_HAS_CONSTRUCTOR <= FALSE
+    atexit(Debug_atexit);
+    #endif
+
+    Debug_Main();
+    /* __DEBUG_GETCH(); */
+}
+
+void Debug_Limits(void)
+{
+
+    printf("\n");
+    printf("byte:      %zu\n", sizeof(byte));
+    printf("char:      %zu\n", sizeof(char));
+    printf("short:     %zu\n", sizeof(short));
+    printf("int:       %zu\n", sizeof(int));
+    printf("long:      %zu\n", sizeof(long));
+    printf("llong:     %zu\n", sizeof(long long));
+    printf("float:     %zu\n", sizeof(float));
+    printf("double:    %zu\n", sizeof(double));
+    printf("u-byte:    %zu\n", sizeof(unsigned char));
+    printf("u-char:    %zu\n", sizeof(unsigned char));
+    printf("u-short:   %zu\n", sizeof(unsigned short));
+    printf("u-int:     %zu\n", sizeof(unsigned int));
+    printf("u-long:    %zu\n", sizeof(unsigned long));
+    printf("u-llong:   %zu\n", sizeof(unsigned long long));
+    printf("u-hd-int:  %zu\n", sizeof(unsigned short int));
+    printf("u-lld-int: %zu\n", sizeof(unsigned long long int));
+
+    __DEBUG_GETCH();
+
+}
+
+void Debug_Config(void) {
+
+/* Disabled Content */
+    if(OPT_INFO_READOUT == DISABLED) {
+        memset(scL_general_info, '\0', sizeof(scL_general_info));
+    }
+
+/* pre-configured content */
+
+    float _fver = XSCINF_VERSION; /* fix version floating point flaw. */
+    memcpy(&scL_general_info[1], &_fver, sizeof(_fver));
+
+    Debug_InitializeSettings();
+}
+
+void Debug_InitializeSettings(void) {
+
+    float _fver;
+    memcpy(&_fver, &scL_general_info[1], sizeof(_fver));
+
+    if(OPT_DISABLE_INTRO == ENABLED) {
+        #ifdef __STDCON__
+        _stdc_main_intro = 0;
+        #endif
+    }
+
+    if(OPT_ANSI_COLOR == ENABLED) {
+        DWORD _Mod;
+        GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &_Mod);
+        SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), _Mod & ~0x0004);
+    }
+    if(OPT_UNICODE_MODE == ENABLED) {
+        SetConsoleOutputCP(CP_UTF8);
+    }
+
+    if(OPT_OUTPUT_PRINT == ENABLED) {
+        _dbgFile = fopen("DEBUG.log", "w");
+    }
+
+    if(OPT_INFO_READOUT == ENABLED) {
+        if(OPT_OUTPUT_PRINT == ENABLED) {
+            fprintf(_dbgFile, "[SUPER-C] {\n");
+            fprintf(_dbgFile, "Build: %i\n", scL_general_info[0]);
+            fprintf(_dbgFile, "Version: %g\n", _fver);
+            fprintf(_dbgFile, "Release: %i\n", scL_general_info[5]);
+            fprintf(_dbgFile, "Debug: %i\n", scL_general_info[3]);
+            fprintf(_dbgFile, "Date: %i\n", scL_general_info[4]);
+            fprintf(_dbgFile, "}\n\n");
+        }
+    }
+
+}
+
+void Debug_Settgs(void) {
+
+
+    #if XSCCONF_ANSI_ESCAPE >= ENABLED
+
+        #ifndef XSC_WINDOWS
+        char* _ansi_start_g = "\x1b[34m";
+        #else
+        char* _ansi_start_g = "\x1b[32m";
+        #endif
+    char* _ansi_start_r = "\x1b[31m";
+    char* _ansi_end = "\x1b[0m";
+    #else
+    char* _ansi_start_g = "";
+    char* _ansi_start_r = "";
+    char* _ansi_end = "";
+    #endif
+
+    #define __optdetec(_sett) _sett ? _ansi_start_g : _ansi_start_r
+
+    printf("XSCCONF_STDBASIC[%s%i%s] - does nothing, used only for demontration and debugging.\n", __optdetec(XSCCONF_STDBASIC), XSCCONF_STDBASIC, _ansi_end);
+    printf("XSCCONF_ANSI_ESCAPE[%s%i%s] - enables/disables ansi sequences, useful if your system doesn't support them.\n", __optdetec(XSCCONF_ANSI_ESCAPE), XSCCONF_ANSI_ESCAPE, _ansi_end);
+    printf("XSCCONF_USE_ANSI_ONLY[%s%i%s] - forces the library to use only ansi operations (when possible).\n", __optdetec(XSCCONF_USE_ANSI_ONLY), XSCCONF_USE_ANSI_ONLY, _ansi_end);
+    printf("XSCCONF_STDCON_NOCLEANUP[%s%i%s] - disables automatic screen cleaning at stdcon.h.\n", __optdetec(XSCCONF_STDCON_NOCLEANUP), XSCCONF_STDCON_NOCLEANUP, _ansi_end);
+    printf("XSCCONF_INCLUDE_ALL[%s%i%s] - makes the library include all of the C/C++ standard library.\n", __optdetec(XSCCONF_INCLUDE_ALL), XSCCONF_INCLUDE_ALL, _ansi_end);
+    printf("XSCCONF_NORETURN[%s%i%s] - disables returning for some functions, this results in pretty noticeable size optimization.\n", __optdetec(XSCCONF_NORETURN), XSCCONF_NORETURN, _ansi_end);
+    printf("XSCCONF_STDCON_NO_RETURN_CPOS[%s%i%s] - disables returning for \"GetCursorPosition\" Function in stdcon.h.\n", __optdetec(XSCCONF_STDCON_NO_RETURN_CPOS), XSCCONF_STDCON_NO_RETURN_CPOS, _ansi_end);
+    printf("XSCCONF_DRAWS_BOUNDS[%s%i%s] - enables the optimization that prevents drawing out-of-bounds, speed is highly affected by it.\n", __optdetec(XSCCONF_DRAWS_BOUNDS), XSCCONF_DRAWS_BOUNDS, _ansi_end);
+    printf("XSCCONF_ADVANCED_DRAWS[%s%i%s] - enables advanced features for draws.\n", __optdetec(XSCCONF_ADVANCED_DRAWS), XSCCONF_ADVANCED_DRAWS, _ansi_end);
+    printf("XSCCONF_EXCLUSIVE_HDR[%s%i%s] - toggles customized header names, disabling is useful if you need to identify the data type.\n", __optdetec(XSCCONF_EXCLUSIVE_HDR), XSCCONF_EXCLUSIVE_HDR, _ansi_end);
+    printf("XSCCONF_STDCON_AUTO_UPDATE[%s%i%s] - enabled by default, responsible for the console auto-update system.\n", __optdetec(XSCCONF_STDCON_AUTO_UPDATE), XSCCONF_STDCON_AUTO_UPDATE, _ansi_end);
+    printf("XSCCONF_SUPRESS_WARNINGS[%s%i%s] - supresses almost every library built-in warning.\n", __optdetec(XSCCONF_SUPRESS_WARNINGS), XSCCONF_SUPRESS_WARNINGS, _ansi_end);
+    printf("XSCCONF_SHARED[%s%i%s] - tells the library that you'll work with threads. therefore disabling some optimizations.\n", __optdetec(XSCCONF_SHARED), XSCCONF_SHARED, _ansi_end);
+    printf("XSCCONF_TYPEOF_MOD3[%s%i%s] - switches typeof to model 3 which is the most cross compatible model that fits the standard.\n", __optdetec(XSCCONF_TYPEOF_MOD3), XSCCONF_TYPEOF_MOD3, _ansi_end);
+    printf("XSCCONF_STRINGS_STRCUT_MODIFY_ALL[%s%i%s] - changes the strcut mode to modify every match.\n", __optdetec(XSCCONF_STRINGS_STRCUT_MODIFY_ALL), XSCCONF_STRINGS_STRCUT_MODIFY_ALL, _ansi_end);
+    printf("XSCCONF_STDCON_UPDATE_COORDS[%s%i%s] - disables stdcon auto-updating cursor system; improves size.\n", __optdetec(XSCCONF_STDCON_UPDATE_COORDS), XSCCONF_STDCON_UPDATE_COORDS, _ansi_end);
+    printf("XSCCONF_SUPER_C_SPLASH_SCREEN[%s%i%s] - enables/disables the main splash screen.\n", __optdetec(XSCCONF_SUPER_C_SPLASH_SCREEN), XSCCONF_SUPER_C_SPLASH_SCREEN, _ansi_end);
+    printf("XSCCONF_ALT_SPELLINGS[%s%i%s] - alternative functions/macros spellings. if toggled, all the other sub-sets get toggled.\n", __optdetec(XSCCONF_ALT_SPELLINGS), XSCCONF_ALT_SPELLINGS, _ansi_end);
+    printf("XSCCONF_FUNCTION_ALT_SPELLINGS[%s%i%s] - toggles alternative spellings, most related to the first uppercase char.\n", __optdetec(XSCCONF_FUNCTION_ALT_SPELLINGS), XSCCONF_FUNCTION_ALT_SPELLINGS, _ansi_end);
+    printf("XSCCONF_OPRPACK_ORIGINAL_NOT[%s%i%s] - makes 'not' iso646 like. simply put: not == (0: -> '!='/1: -> '!')\n", __optdetec(XSCCONF_OPRPACK_ORIGINAL_NOT), XSCCONF_OPRPACK_ORIGINAL_NOT, _ansi_end);
+    printf("XSCCONF_CUSTOM_SECTIONS[%s%i%s] - if enabled the library creates it's own custom section for each package.\n", __optdetec(XSCCONF_CUSTOM_SECTIONS), XSCCONF_CUSTOM_SECTIONS, _ansi_end);
+    printf("XSCCONF_CUSTOM_ATTRIBUTES[%s%i%s] - enables/disables ALL custom attributes from all packages.\n", __optdetec(XSCCONF_CUSTOM_ATTRIBUTES), XSCCONF_CUSTOM_ATTRIBUTES, _ansi_end);
+    printf("XSCCONF_CUSTOM_SCMATH_ATTRIBUTES[%s%i%s] - enables/disables custom attributes from scmath only.\n", __optdetec(XSCCONF_CUSTOM_SCMATH_ATTRIBUTES), XSCCONF_CUSTOM_SCMATH_ATTRIBUTES, _ansi_end);
+    printf("XSCCONF_CUSTOM_DRAWS_ATTRIBUTES[%s%i%s] - enables/disables custom attributes from draws only. \n", __optdetec(XSCCONF_CUSTOM_DRAWS_ATTRIBUTES), XSCCONF_CUSTOM_DRAWS_ATTRIBUTES, _ansi_end);
+    printf("XSCCONF_CUSTOM_SPP_ATTRIBUTES[%s%i%s] - enables/disables custom attributes from string++ only.\n", __optdetec(XSCCONF_CUSTOM_SPP_ATTRIBUTES), XSCCONF_CUSTOM_SPP_ATTRIBUTES, _ansi_end);
+    printf("XSCCONF_READ_LICENSE[%s%i%s] - tells if the license should be shown AFTER the intro.\n", __optdetec(XSCCONF_READ_LICENSE), XSCCONF_READ_LICENSE, _ansi_end);
+
+    __DEBUG_GETCH();
+}
+void Debug_DetectHeader(void)
+{
+
+    #define printf(...) ( \
+                         __DEBUG_SLEEP(250000), \
+                         printf(__VA_ARGS__) \
+                         )
+    __DEBUG_CLEAR();
+    int _TIME_ = 100;
+
+	char* RED = "";
+	char* GRN = "";
+	char* YLW = "";
+	char* DEF = "";
+
+	#if defined(__STDCON__) && XSCCONF_ANSI_ESCAPE >= ENABLED
+	GRN = (char*) "\x1b[32m";
+	RED = (char*) "\x1b[31m";
+	YLW = (char*) "\x1b[33m";
+	DEF = (char*) "\x1b[0m";
+	#endif
+
+	char* NOT =
+	#if defined(__STDCON__) && XSCCONF_ANSI_ESCAPE >= ENABLED
+	"\x1b[31mNOT INCLUDED\x1b[0m";
+	#else
+	"NOT INCLUDED";
+	#endif
+
+	char* INC =
+	#if defined(__STDCON__) && XSCCONF_ANSI_ESCAPE >= ENABLED
+    "\x1b[32mINCLUDED\x1b[0m";
+	#else
+    "INCLUDED";
+	#endif
+
+	printf("aniframe.h:  [%s]\n",
+        #ifndef _ANIFRAME_H
+        NOT
+        #else
+        INC
+    	#endif
+    );
+
+    printf("arrays.h:    [%s]\n",
+        #ifndef __XCM__ARRAY__FUNCTIONS__DEFINED__
+        NOT
+        #else
+        INC
+        #endif
+    );
+
+	printf("cycles.h:    [%s]\n",
+        #ifndef _CYCLES_DT_H
+        NOT
+        #else
+        INC
+        #endif
+    );
+
+	printf("draws.h:     [%s]\n",
+        #ifndef __XSC_ASCII_PAINT_TOOLS__
+        NOT
+        #else
+        INC
+        #endif
+    );
+
+	printf("kwpack.h:    [%s]\n",
+        #ifndef __KWPACK__
+        NOT
+        #else
+        INC
+        #endif
+    );
+
+	printf("opack.h:     [%s]\n",
+        #ifndef _OPERATOR_PACK
+        NOT
+        #else
+        INC
+        #endif
+    );
+
+	printf("sciopak.h:   [%s]\n",
+        #ifndef __SCIOPAK_H__
+        NOT
+        #else
+        INC
+        #endif
+    );
+
+	printf("stdcon.h:    [%s]\n",
+        #ifndef __STDCON__
+        NOT
+        #else
+        INC
+        #endif
+
+    );
+
+	printf("scmath.h:    [%s]\n",
+        #ifndef _XSC_SCMATH
+        NOT
+        #else
+        INC
+        #endif
+	);
+
+	printf("strings.h:   [%s]\n",
+        #ifndef __STRINGS_H
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("string++:    [%s]\n",
+        #ifndef __STRPLUSPLUS
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("file.io:     [%s]\n",
+        #ifndef _ADVANCED_IO_
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("bfactory.h:  [%s]\n",
+        #ifndef _XSC_BINARY_FUNCTIONS
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("logic.h:     [%s]\n",
+        #ifndef _XSC_LGATE_H
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("misc.h:      [%s]\n",
+        #ifndef __XSC_MISC1__
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("pltstd.h:    [%s]\n",
+        #ifndef __PLATFORM_STANDARD
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("sort.h:      [%s]\n",
+        #ifndef _XCM_SORT
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("esosort.h:   [%s]\n",
+        #ifndef _XCM_ESOTERIC_SORT
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("rodata.h:    [%s]\n",
+        #ifndef __RODATA_H__
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("fadvance.h:  [%s]\n",
+        #ifndef _F_ADVANCE_
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+	printf("autoVA.h:    [%s]\n",
+        #ifndef XCM_AUTOVA_
+            NOT
+        #else
+            INC
+        #endif
+    );
+
+    int I;
+    for(I = 0; I < 3; ++I) {
+        putchar('.');
+        __DEBUG_SLEEP(1000000);
+    }
+
+    printf("\r   \r");
+
+    #if DISABLED
+	printf("show sub-directories from %s\\s\\%s directory? [%sY%s / %sN%s] [ ]\b\b",
+        YLW, DEF, GRN, DEF, RED, DEF);
+    #else
+    printf("awaiting key-press to continue...");
+    #endif
+
+    __DEBUG_GETCH();
+    sysclear;
+    #undef printf
+}
+
+void Debug_Main(void) {
+
+    int selector = 0;
+
+    _RETRY:
+
+        printf("1 - Examples. [In-Development]\n");
+        printf("2 - User Manual. [In-Development]\n");
+        printf("3 - Execute The Program.\n");
+        printf("4 - Execute The Program w/Codak Screen. [In-Development]\n"); /* Should i call it Codak or DaCoda screen? */
+        printf("5 - Settings.\n\n");
+        printf("6 - Quit.\n\n");
+
+        printf("> ");
+        selector = getchar() - '0';
+        getchar();
+        if(selector == -1) {
+
+        } else if(selector == -2) {
+
+        } else if(selector == 3) {
+            Debug_Config();
+            _InitClock_();
+            clear;
+            return;
+        } else if(selector == -4) {
+            codeScreen();
+        } else if(selector == 5) {
+
+            __DEBUG_CLEAR();
+
+            char _Opt[2] = {'0', '1'};
+            char _Arrow[2] = {' ', '<'};
+
+            int _Sett = 0;
+            char _Ch = '\0'; /* use this when defining every char data type */
+
+            while(1) {
+
+                #if XSCCONF_ANSI_ESCAPE >= ENABLED
+                printf("\x1b[H");
+                #else
+                sysclear;
+                #endif
+
+                printf("[SETTINGS SECTION] %s\n\n",
+
+                #if XSCCONF_ANSI_ESCAPE <= DISABLED
+                _Ch == -1 ? "(invalid keycode, try something else.)\n" : ""
+                #else
+                ""
+                #endif
+
+                );
+
+                /* printf("[Z - INCREASES THE OPTION LEVEL]\n"); */
+                printf("[X - CHANGES THE OPTION]\n");
+                printf("[Z - RECEEDS THE OPTION]\n");
+                printf("[Y - TOGGLES THE OPTION]\n");
+                printf("[Q - QUIT TO THE MENU]\n\n\n");
+
+                /* < z x > */
+
+                /*
+                    [ ]  -> [ ]
+                         /
+                    [ ] v   [ ]
+                */
+
+                /* Unicode option may be 1/0 depending on the OS */
+
+                printf("\t\t\tDisable intro [%c] %c\t\t\t\t\tDisable outro [%c] %c\n\n\n",
+                            _Opt[OPT_DISABLE_INTRO], _Arrow[(_Sett == 0)],
+                            _Opt[OPT_DISABLE_OUTRO], _Arrow[(_Sett == 1)]
+                       );
+                printf("\t\t\tquit inline error [%c] %c\t\t\t\t\truntime fprintf (C99) [%c] %c\n\n\n",
+                            _Opt[OPT_INLINE_CONTINUE], _Arrow[(_Sett == 2)],
+                            _Opt[OPT_OUTPUT_PRINT],    _Arrow[(_Sett == 3)]
+                       );
+                printf("\t\t\tANSI Color [%c] %c\t\t\t\t\tUnicode [%c] %c\n\n\n",
+                            _Opt[OPT_ANSI_COLOR],   _Arrow[(_Sett == 4)],
+                            _Opt[OPT_UNICODE_MODE], _Arrow[(_Sett == 5)]
+                       );
+                printf("\t\t\tMultiple Buffers [%c] %c\t\t\t\t\treadout from SUPERCINF [%c] %c\n\n\n",
+                            _Opt[OPT_EXTENDED_BUFFER], _Arrow[(_Sett == 6)],
+                            _Opt[OPT_INFO_READOUT],    _Arrow[(_Sett == 7)]
+                       );
+
+
+
+                printf(" - Show Library Info O %s\n\n", (_Sett == 8) ? "<<<" : "   ");
+                printf(" - Show Type Sizes O %s\n\n\n\n", (_Sett == 9) ? "<<<" : "   ");
+
+
+                /* printf("%c z x %c", _Ch == 'Z' ? '<' : '-', _Ch == 'X' ? '>' : '-'); */
+
+                #ifndef XSC_WINDOWS
+                printf("> ");
+                #endif
+
+                _Ch = toupper(__DEBUG_GETCH());
+
+                printf("                                                                    \r");
+
+                switch(_Ch) {
+
+                    /* case 'Y': /* increase option
+                        break; */
+                    case 'Z': /* switch option (<) */
+                        --_Sett;
+                        if(_Sett < 0) _Sett = 9;
+                        break;
+                    case 'X': /* switch option (>) */
+                        ++_Sett;
+                        if(_Sett >= 10) _Sett = 0;
+                        break;
+                    case 0x0D:
+                    case 'Y': /* toggle option */
+
+                        _SettList = !((_SettList >> _Sett) & 1) ?
+                        _SettList | (1 << _Sett) :
+                        _SettList ^ (1 << _Sett) ;
+
+                        if(_Sett == 8) {
+                            Debug_DetectHeader();
+                        } else if (_Sett == 9) {
+                            Debug_Limits();
+                            __DEBUG_CLEAR();
+                        }
+
+                        break;
+                    case 'Q': break;
+
+                    default:
+                        _Ch = -1;
+                    #if XSCCONF_ANSI_ESCAPE >= ENABLED
+                        printf("invalid keycode: '%c', try something else.\n", _Ch);
+                    #endif
+                }
+
+                if(_Ch == 'Q') {
+                    _Ch = 0x00;
+                    __DEBUG_CLEAR();
+                    goto _RETRY;
+                }
+
+            }
+
+        } else if(selector == 6) {
+            exit(0x0);
+        } else {
+            printf("Invalid Input: '%i', try again.\n\n", selector);
+            goto _RETRY;
+        }
+    /* EndOf RETRY:/ */
+}
+
+
+/* instead of doing this, i could actually run another executable and pass the entire code as a argument. */
+/* wow. */
+void mkDebugConsol() {
+    if (FreeConsole()) {
+        if (AllocConsole()) {
+            FILE *FP;
+            freopen_s(&FP, "CONOUT$", "w", stdout);
+            freopen_s(&FP, "CONOUT$", "w", stderr);
+            freopen_s(&FP, "CONIN$", "r", stdin);
+            SetConsoleTitle("CodeEmulator");
+        } else {
+            MessageBox(NULL, "Failed to allocate console.", "Error", MB_OK | MB_ICONERROR);
+        }
+    } else {
+        MessageBox(NULL, "Failed to free existing console.", "Error", MB_OK | MB_ICONERROR);
+    }
+}
+void DestroyDebugConsol() {
+    if (FreeConsole()) {
+        if (AllocConsole()) {
+            FILE * FP;
+            freopen_s(&FP, "CONOUT$", "w", stdout);
+            freopen_s(&FP, "CONOUT$", "w", stderr);
+            freopen_s(&FP, "CONIN$", "r", stdin);
+            SetConsoleTitle("Original Console Window");
+        } else {
+            MessageBox(NULL, "Failed to allocate console.", "Error", MB_OK | MB_ICONERROR);
+        }
+    } else {
+        MessageBox(NULL, "Failed to free new console.", "Error", MB_OK | MB_ICONERROR);
+    }
+}
+
+void codeScreen() {
+
+    mkDebugConsol();
+
+    #if COMPILER_ID != ID_GCC && COMPILER_ID != ID_CLANG
+    #define __BASE_FILE__ __FILE__
+    #endif
+
+    FILE* Cody = fopen(__BASE_FILE__, "r");
+
+    if (Cody == NULL) {
+        perror("Error! (reason: File Empty or Invalid? Also..how??!)");
+        exit(0x1);
+    }
+
+    fseek(Cody, 0, SEEK_END);
+    long  _SZ  = ftell(Cody);
+    fseek(Cody, 0, SEEK_SET);
+    char* _STR = (char*)calloc(_SZ, sizeof(char));
+    fread(_STR, _SZ, 1,Cody);
+    printf("%s", _STR);
+    free(_STR);
+    fclose(Cody);
+
+    getch();
+
+    DestroyDebugConsol();
+}
+
+#undef _HASMGW
+#undef __DEBUG_GETCH
+#undef __DEBUG_CLEAR
+#undef __DEBUG_SLEEP
+
+time_t _runner;
+
+/* Debugging Stuff to make developers life a bit easier :) */
+#ifndef _DBG_TOOLS
+#define _DBG_TOOLS
+#define testspd(_func) (_runner = clock(), _func, printf("%gs", (double)(clock() - _runner) * 0.001))
+#define testspdln(_func) (_runner = clock(), _func, printf("%gs\n", (double)(clock() - _runner) * 1000))
+/* Special Debugging Content */
+#define __ELOG__ fprintf(stderr, "[ERR]-@-> (%s: %i)\n", __FILE__, __LINE__);
+#define __FLOG__ fprintf(stdout, "[LOG]-@-> (%s: %i)\n", __FILE__, __LINE__);
+#endif
+
+#if LANG_VERSION >= CC99
+    #define printf(...) OPT_OUTPUT_PRINT == ENABLED ? (fprintf(_dbgFile, __VA_ARGS__), printf(__VA_ARGS__)) : \
+                printf(__VA_ARGS__)
+#endif
+#endif /* __DEBUGGER__ */

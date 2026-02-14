@@ -1,0 +1,241 @@
+#ifndef __STRPLUSPLUS
+#define __STRPLUSPLUS
+
+#line 5 "[string++]"
+
+#include <super/stdbasic.h>
+
+#if XSCCONF_SHARED <= DISABLED
+  #define __GET_STRG_LENGTH__(_Name, _Type) __sh_len_
+  #define __len__(_Name) __sh_len_
+#else
+  #define __GET_STRG_LENGTH__(_Type, _Name) _Type _Name
+  #define __len__(_Name) _Name
+#endif
+
+#define _THRD_INT_T(_Name_, ...) _Name
+#define __THREAD_INT_T(...) _THRD_INT_T(__VA_ARGS__)
+
+typedef char* stringplpl_string;
+typedef char stringplpl_char;
+typedef int stringplpl_int;
+
+stringplpl_string strcut(char * _Src, const char * _SubA, const char * _SubB); /* cuts everything between a substring and another substring. */
+stringplpl_string strchr_r(char * _Str, int _Val, int _inc); /* get everything before a character in a string. */
+stringplpl_string strbet(char * _Src, const char * _SubA, const char * _SubB); //get the substring between two characters in a string. */
+stringplpl_string strlwr(char * _Str); /* converts every uppercase-char in a string to lowercase. */
+stringplpl_string strupr(char * _Str); /* converts every lowercase-char in a string to uppercase. */
+stringplpl_string strswp(char * _Str); /* swaps the uppercase with the lowercase char-set. */
+stringplpl_string strshf(char * _Str); /* string shuffle, the name is self explanatory. */
+stringplpl_string strvcat(char * STRG_DEST, unsigned short C, ...); /* string cat but with a unlimited varidic counter. */
+stringplpl_string chrrepl(char * _content, int A, int B); /* replaces a character in a string with another character. */
+stringplpl_string strrepl(char * _Str, const char * _Tar, const char * _repl); /* replace a substring with another substring. */
+
+stringplpl_char stremp(const char * _Str); /* returns null if the string is empty or has only whitespace characters. */
+stringplpl_char strnull(char * _Str); /* checks if a string is null, this function returns 0 if it is, 1 if it's not, and 2 if null by terminator. */
+
+stringplpl_int xstrcmp(const char * _Str1, const char * _Str2); /* exclusive strcmp. */
+stringplpl_int chcount(char * _STR, unsigned char ch); /* count the amount of times a character appears in a string. */
+stringplpl_int isspecial(char ch); /* check if the char is a special character: ' ', '\n', '\t'. */
+
+/* time = O(n*m), space = O(1) */
+#if XSCCONF_STRINGS_STRCUT_MODIFY_ALL <= DISABLED
+    stringplpl_string strcut(char * _src, const char * _SubBeg, const char * _SubEnd) {
+        if(!strcmp(_SubBeg, "")) return ERR_5C002;
+        if(!strcmp(_SubEnd, "")) return ERR_5C002;
+
+        char* p_start = strstr(_src, _SubBeg);
+        if(p_start == NULL) return 0xD1;
+
+        char* p_end = strstr(p_start, _SubEnd) + strlen(_SubEnd);
+        if(p_end == NULL) return 0xD2;
+
+        memmove(p_start, p_end, strlen(p_end) + 1);
+    }
+#else
+    stringplpl_string strcut(char * _src, const char * _SubBeg, const char * _SubEnd) {
+        char* p_start,* p_end;
+        if(!strcmp(_SubBeg, "")) return ERR_5C002;
+        if(!strcmp(_SubEnd, "")) return ERR_5C002;
+
+        while ((p_start = strstr(_src, _SubBeg)) && (p_end = strstr(p_start, _SubEnd))) {
+            p_end += strlen(_SubEnd);
+            memmove(p_start, p_end, strlen(p_end) + 1);
+        }
+    }
+#endif
+
+xscs_stringpp
+stringplpl_string strchr_r(char * _Str, int _Val, int _inc) {
+    __GET_STRG_LENGTH__(size_t, _ln) = strlen(_Str);
+
+    __c89_decl;
+    for(__c99_decl; I < __len__(_ln); ++I) {
+
+        if(_Str[I] == _Val && strchr(_Str + I +1, ',') == NULL) {
+
+
+            _Str[I + _inc] = '\0';
+            break;
+
+        }
+    }
+
+    return _Str;
+}
+
+xscs_stringpp
+stringplpl_string strbet(char * _src, const char * _Str1, const char * _Str2) {
+
+    if(_src == NULL) return 0xD1; //= 10 bytes (approx.), 20 bytes (approx; unoptimized)
+
+    const char* _end = strstr(_src, _Str2);
+
+    if(_end != NULL) {
+
+        const char* _beg = strstr(_src, _Str1);
+
+        _src[_end - _beg] = '\0';
+
+        if (_beg == NULL) return 0xD2; /* 0xDX = Error_ModelBy_Data_Type_Order */
+
+        memmove(_src, _beg + strlen(_Str1), _end - _beg);
+        return _src;
+
+    } else {
+        return 0xD3;
+    }
+}
+/* strncpy(_src, _beg + strlen(_Str1), _end - _beg); */
+
+xscs_stringpp
+stringplpl_string strlwr(char * _Str) {
+    __GET_STRG_LENGTH__(uint, _ln) = strlen(_Str);
+    __c89_decl;
+    for(__c99_decl; I < __len__(_ln); ++I) {
+        _Str[I] = tolower(_Str[I]);
+    }
+    return _Str;
+}
+
+stringplpl_string strupr(char * _Str) {
+    __GET_STRG_LENGTH__(uint, _ln) = strlen(_Str);
+    __c89_decl;
+    for(__c99_decl; I < __len__(_ln); ++I) {
+        _Str[I] = toupper(_Str[I]);
+    }
+    return _Str;
+}
+
+xscs_stringpp
+stringplpl_string strswp(char * _Str) {
+    __GET_STRG_LENGTH__(uint, _ln) = strlen(_Str);
+    __c89_decl;
+    for(__c99_decl; I < __len__(_ln); ++I) {
+        _Str[I] = !(isupper(_Str[I])) ? toupper(_Str[I]) : tolower(_Str[I]);
+    }
+    return _Str;
+}
+
+xscs_stringpp
+stringplpl_string strshf(char * _Str) {
+    srand(time(0)*rand());
+    __GET_STRG_LENGTH__(uint, _ln) = strlen(_Str);
+    __c89_decl_loop(I = 0);
+    int J = 0;
+    for (__c99_decl_loop(I = 0), J; I < __len__(_ln); ++I) {
+        J = rand() % (I + 1);
+        if (I != J) {
+            _Str[I] ^= _Str[J];
+            _Str[J] ^= _Str[I];
+            _Str[I] ^= _Str[J];
+        }
+    }
+    __stdb_return(_Str);
+}
+
+xscs_stringpp
+stringplpl_string chrrepl(char * _content, int A, int B) {
+    __c89_decl;
+    for(__c99_decl; _content[I] != '\0'; ++I) {
+        if (_content[I] == A) _content[I] = B;
+    }
+}
+
+xscs_stringpp
+stringplpl_string strrepl(char * _Str, const char * _Tar, const char * _repl) {
+    char* __pos = _Str;
+    size_t _len1 = strlen(_Tar);
+    size_t _len2 = strlen(_repl);
+
+    while ((__pos = strstr(__pos, _Tar)) != NULL) {
+        if (!isalpha(*(__pos + _len1))) {
+            memmove(__pos + _len2, __pos + _len1, strlen(__pos + _len1) + 1);
+            memcpy(__pos, _repl, _len2);
+            __pos += _len2;
+        } else {
+            __pos += _len1;
+        }
+    }
+}
+
+xscs_stringpp
+stringplpl_string strvcat(char * STRG_DEST, unsigned short C, ...)
+{
+    va_list V;
+    va_start(V, C);
+    __c89_decl;
+    for(__c99_decl; I < C; ++I) strcpy(STRG_DEST, va_arg(V, String));
+    va_end(V);
+}
+
+xscs_stringpp xsc_fastcall
+    stringplpl_int xstrcmp(const char * _Str1, const char * _Str2)
+    {
+        __GET_STRG_LENGTH__(size_t, _Max) = strlen(_Str2); /* size_t _Max = strlen(_Str2); */
+        return strncmp(_Str1, _Str2, __len__(_Max)) + isalpha(_Str1[__len__(_Max)]);
+    }
+
+xscs_stringpp
+stringplpl_int chcount(char * _STR, unsigned char ch) {
+    __GET_STRG_LENGTH__(size_t, _C); /* size_t _C = 0; */
+    while (* _STR) {
+        if (* _STR == ch) {
+            ++__len__(_C);
+        }
+        ++_STR;
+    }
+    return __len__(_C);
+}
+
+xscs_stringpp
+stringplpl_int isspecial(char ch) {
+    return (ch == ' ' | ch == '\n' | ch == '\t');
+}
+
+xscs_stringpp
+stringplpl_char stremp(const char * _Str) {
+    while (*_Str) {
+        if (!isspecial((unsigned char)*_Str)) {
+            return _Str;
+        }
+        ++_Str;
+    }
+    return NULL;
+}
+
+xscs_stringpp
+_C99_INLINE
+    stringplpl_char strnull(char * _Str) {
+        return (_Str[0] == NULL) ? 0 : (_Str[0] == '\0') ? 2 : 1; /* 2 = null term. 1, not-null, and 0 is null (duh). */
+    }
+
+#if XSCCONF_SHARED >= ENABLED
+  #undef __GET_STRG_LENGTH__
+  #undef __len__
+  #undef __THREAD_INT_T /* __SELECTABLE_INT_T / __THREAD_INT_T */
+#endif
+
+#include <super/sub/stdcrt.h>
+
+#endif /* __STRPLUSPLUS */

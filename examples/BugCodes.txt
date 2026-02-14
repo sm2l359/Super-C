@@ -1,0 +1,13 @@
+F-XX (F Stands for flaw)
+AX - Accidental (...).
+CX - Syntax Related.
+
+F-00 - Duplication of already used type from another header. (cases like the predefinitions in stdbasic.h) that has been causing a lot of headache for me lately.
+F-01 - omission of function that caused undefined reference.
+F-02 - wrong definition of operator logic. (ex: defining a macro that was supposed to be '<= 0' but was set as '>= 1'.)
+F-03 - Incorrect emission of keyword.
+F-A1 - Accidental Redefinition.
+F-A2 - Accidental Preprocessor Mistake.
+F-C0 - Preprocessor Syntax flaw.
+F-C1 - General syntax flaw. (can be related to anything, not just the preprocessor)
+F-C2 - Anti-Yoda Notation. 'if(var1 = 42)'

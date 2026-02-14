@@ -1,0 +1,7 @@
+/**
+Fallback file
+**/
+
+#ifndef __STDCON__
+#include <super/stdcon.h>
+#endif

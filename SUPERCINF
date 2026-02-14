@@ -1,0 +1,26 @@
+/*
+BUILD = 2,
+VERSION = 1.4,
+BUILD1 = X,
+DEBUG = X,
+DATE = X,
+DEV = NO
+*/
+
+#ifndef XSCSET_DEBUG
+#define XSCINF_DEBUG 0
+#else
+#define XSCINF_DEBUG 1
+#endif
+
+#define XSCINF_BUILD1 XSCSET_BUILD1
+
+/* this template file can be used to obtain the main information in a array at runtime. */
+{
+XSCINF_BUILD, /* BUILD */
+XSCINF_VERSION, /* VERSION */
+XSCINF_BUILD1, /* 1ST-BUILD */
+XSCINF_DEBUG, /* DEBUG-MODE */
+XSCINF_DATE, /* DATE-NUM */
+!XSCINF_RELEASE /* DEV-MODE */
+};
