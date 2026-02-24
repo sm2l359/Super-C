@@ -142,15 +142,7 @@ strings_int chrcount(String _TXT, sbyte _TAR)
 
 strings_int wrdcount(String _TXT, sbyte _WORD)
 {
-    uint16_t _COUNTR = 0;
-
-    while(* _TXT != '\0')
-    {
-        if(* _TXT == _WORD) ++_COUNTR;
-        ++_TXT;
-    }
-
-    return (int)_COUNTR;
+    /* [ONC] */
 }
 
 /* directives area. */

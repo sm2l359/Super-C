@@ -548,7 +548,7 @@ void Debug_DetectHeader(void)
         #endif
     );
 
-	printf("bfactory.h:  [%s]\n",
+	printf("binfactory.h:[%s]\n",
         #ifndef _XSC_BINARY_FUNCTIONS
             NOT
         #else

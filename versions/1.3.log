@@ -1,0 +1,43 @@
+(1.3):
+
+//Additions:
+//-New Functions!
+//  +mktypeText() <aniframe.h>
+//  +strnull() <string++>
+//  +scmath_pow10() <scmath.h>
+//
+//  +aprintf() was re-implemented and re-modeled.
+//  +officially added new packages: 'misc.h',
+//   'version.h', 'langpak.h'.
+//  +implemented 2 more operators to 'oprpack.h'.
+//  +now it's possible to verify the current version
+//   & language thanks to 'version.h' & 'langpak.h'.
+//  +implemented new cross-compatible compiler attributes
+//   in 'attribs.h': 'aligned', 'format' and 'auto'. along
+//   with a new special extension, "xsc_crossformat" that
+//   automatically adapts the printing format for the user,
+//   and many extra extensions & tokens for specific
+//   pre-defined sections & custom sections.
+//   +"finished" the aprintf and scmath_pow10 functions.
+//   +re-implemented many functions back to scmath.h,
+//    together with new ones.
+//   +added back some functions into misc.h. among them,
+      brought back the now slightly optimized concatf().
+//Changes:
+//  -2 syntax errors related to compiler.h fixed. (F-C0)
+//  -changed preprocessor tag name back from 'CONFIG' to 'XSCCONF'.
+//  -fixed a definition name flaw in 'compiler.h' in MSVC section. (F-A0)
+//  -all the simplified types from keyword pack were
+//   separated into a new package called simplified-t.h
+//  -officially adopted the multi-line comment standard for C-89
+//   soon, all the comments will be replaced with the multi-line model.
+//   (even some comments are already starting to be replaced by multi-line comments
+//   or adapted for C-89 standards.)
+//   NOTE: some still need to be updated.
+//  -finished the var keyword.
+//  -replaced the string system in kwpack.h, now 'string' was renamed to 'mstring'
+//   while 'ustring' became 'string', but 'ustring' it kinda makes more sense for
+//   ustring to take it's place.
+//  -huge code polishment.
+//  -fixed another syntax flaw, this time floating related and on "getos". <stdbasic-getos.h> (F-C0)
+//  -the name 'stdcleanup.h' was changed to 'libcrt.h' due to name convenience reasons.

@@ -139,7 +139,7 @@
 #else
 #define XSC_ARCH 16 /* 16x = Unknown architeture, so it presumes your System is on real mode. */
 #endif
-#else /* [NOTE][CUT][REM] cut this section out later. */
+#else
 /* Maybe i Should replace this with a warning? */
 #if XSC_OS == OsID_WINDOWS
 #if defined(_WIN64)

@@ -68,13 +68,13 @@
 
 
 #if XSCCONF_EXCLUSIVE_HDR >= ENABLED
-  typedef void scmath_void;
-  typedef uint8_t scmath_bool;
-  typedef int16_t scmath_int;
+  typedef void     scmath_void;
+  typedef uint8_t  scmath_bool;
+  typedef int16_t  scmath_int;
   typedef uint16_t scmath_uint;
-  typedef int64_t scmath_llong;
+  typedef int64_t  scmath_llong;
   typedef uint64_t scmath_ullong;
-  typedef double scmath_double;
+  typedef double   scmath_double;
 #else
   #define scmath_void void
   #define scmath_bool uint8_t

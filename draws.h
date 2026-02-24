@@ -91,7 +91,7 @@ draws drawLine(int _X, int _Y, int _X2, int _Y2, const char _Ch);
 #pragma optimize( "g", on )
 #endif
 
-#if LANG_VERSION >= CC99 /* [CUT][REM] change to XSC_LANGVERSION */
+#if LANG_VERSION >= CC99
 
 #ifndef XSC_ASC_PAINT_ODD_SHAPES
 #define XSC_ASC_PAINT_ODD_SHAPES
@@ -219,16 +219,6 @@ void chprint(unsigned short _size, unsigned char _CHR)
 
 #endif
 
-/* [C][R]
-//draw.Line()
-//draw.Square()
-//draw.Circle()
-//draw.Polygon()
-//draw.FillSquare()
-//draw.Iterations = ?
-//draw.Char = ?
-*/
-
 typedef struct Properties {
     draws (*Line)();
     draws (*Circle)();
@@ -244,14 +234,9 @@ draws_Properties draw = {
     .GFI = 0.1f /* GFI = General Function Iteratations [ [+] = Iterate Less, [-] = Iterate More. ] */
 };
 
-/* [CUT]
-//sin(x) = 0.707 (x = sqrt(2) / 2)
-//sin(x) * 10^3 = 707
-*/
-
 /* works only if stdcon is included, and stdc-autoupdate and asc-autoupdate are enabled. */
 #ifdef XSCCONF_UPDATE_DRAWS
-xsc_section(".PreservedDrawing") /* [CUT] stored, allocated, preserved, change to allocated */
+xsc_section(".PreservedDrawing")
 char* _AllocatedDrawing;
 
 #define __DRAWS_UPDATE_CSBI __UPDATE_CSBI
@@ -319,7 +304,6 @@ void drawShape(int32_t _X, int32_t _Y, uint32_t _W, uint32_t _H, uint8_t _Ch, ui
     _Y = _Y >> 1;
     _H = _H >> 1;
     /* _W * _H * (_av <= 15 ? _av <= 10 ? 4 : 3 : 2) */
-    /** [NOTE][CUT] _W * _H / (0.01 * (I * 0.1)) --Original **/
     /* _R * _R * (1 / (_R * 0.1f)) */
     /* _W * _H * (1 / (_av * 0.1f)) */
     int CX, SY;

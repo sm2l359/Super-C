@@ -294,11 +294,11 @@
 #define XSCCONF_OPRPACK_ORIGINAL_NOT DISABLED
 #endif
 
-#ifndef XSCCONF_CUSTOM_SECTIONS /* [ALT] XSCCONF_EXCLUSIVE_SECTIONS */
+#ifndef XSCCONF_CUSTOM_SECTIONS
 #define XSCCONF_CUSTOM_SECTIONS ENABLED
 #endif
 
-#ifndef XSCCONF_CUSTOM_ATTRIBUTES /* [ALT] XSCCONF_OPTIMIZATION_ATTRIBUTES */
+#ifndef XSCCONF_CUSTOM_ATTRIBUTES
 #define XSCCONF_CUSTOM_ATTRIBUTES ENABLED
 #endif
 
@@ -1008,4 +1008,3 @@ lack of package inclusion will result in undefined behaviour if used with functi
 #endif
 
 #endif /* __STDBASIC__ */
-

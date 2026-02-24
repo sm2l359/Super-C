@@ -1,0 +1,14 @@
+(1.2):
+
+//Additions:
+//  +implementation of +3 models for 'typeof_c'.
+//  +started re-development of 'scmath.h'.
+//Changes:
+//  -small tweaks in 'oprpack.h'.
+//  -fixed some bugs and nerfed 'strings.h' and 'string++'.
+//  -re implemented more missing stuff from build-1.
+//  +4 errors corrected.
+//-preprocessor settings:
+//  +changed settings tag from 'XSCCONF' to 'CONFIG'.
+//  +added more preprocessor settings under the tag 'CONFIG'.
+//...and more...

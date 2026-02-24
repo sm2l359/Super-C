@@ -1,0 +1,204 @@
+
+Instructions on how to use the Library:
+	
+	-for the github version
+	 of the library you must pick
+	 it and paste the library
+	 folder directly into
+	 the C library folder.
+	 that may depend on your
+	 OS / Compiler,
+	 if you're using windows
+	 you usually have to
+	 go into custom C compilers
+	 since it doesn't comes
+	 built-in in your system
+	 like gcc and linux.
+	 
+	 because of that you'll
+	 either end up using
+	 mingw or MSVC.
+	 
+	 usually on the default
+	 installation these
+	 files stay either
+	 on Program Files or
+	 program Files (x86)
+	 that is, if you did
+	 the default installation,
+	 if you placed the files
+	 on a custom directory,
+	 you'll have to go after
+	 it and cut the library
+	 folder and navigate to
+	 it.
+
+	-in linux that already comes
+	 with gcc installed you just
+	 need to go to the usr or
+	 the root folder where gcc
+	 may be located and place
+	 the contents in there.
+
+	-mac may or may not have
+	 gcc installed but that
+	 doesn't mean you can't
+	 install it via terminal
+	 specifically, 'brew'.
+	
+	-pick up the folder and
+	 paste it inside the same
+	 directory where the standard
+	 library is located.
+
+	-on the forge version
+	 that is still yet to
+	 be released,
+	 you just need to place
+	 the directory into the
+	 your custom project folder.
+
+	-there are advantages and
+	 disadvantages to each
+	 variation so pick up
+	 carefully.
+
+	-the advantages of the github
+	 version is that you just need
+	 to paste the library once and
+	 you can call it a day.
+	-the disadvantages is that you
+	 have to do a manhunt for the
+	 standard library location.
+	 
+	 a common tip that i would
+	 suggest you is to, IF you
+	 have a debugger you MIGHT
+	 use it to find the standard
+	 library location usually you
+	 can right-click on any standard
+	 header files, open them and
+	 hover the mouse over the
+	 main file to display the
+	 full path. 
+
+	-the advantages of the forge
+	 version is that you won't
+	 have to locate the implementation
+	 folder just to paste the library
+	 itself.
+	-the disadvantage is bloating and
+	 having headaches everytime you
+	 need to re-include Super-C everytime
+	 due to being a boring task having
+	 to re-include the library into every
+	 a new project because it's a really
+	 tedius task to go through.
+
+	-if i had to recommend one i would
+	 recommend the github version, this
+	 is a headache you'll only need to
+	 be throught once.
+	 
+	(Optional)
+	-after doing that paste the ILM.txt
+	 file at the same place as the executable,
+	 this step is optional, as it's just used
+	 if you want to set a license and manifest.
+	
+	 if you don't implement ILM, the compiler
+	 automatically picks the intro-only version
+ 	 of ILM located at the /sub folder.
+
+	-the developers personal suggestion: place
+	 ILM.txt only after you've finished your
+	 program OR if you need a manifest file.
+	
+	-the file itself can be found at the incline
+	 directory, every file at this folder can
+	 either be a file that you can implement
+	 into the project or a documentation used 
+	 to provide a better detail of what you're
+	 working with.
+	 
+
+Latest Changes:
+	
+	Additions: [+]
+	    -added warnings that target the lack of <stdcon.h>
+	    in <cycles.h>
+	    -standardized the way how the library writes pointer declarations.
+	    -started to plan the development of a new header called <three.h>
+	    -along with that, started the development of another header, this time
+	     related to sounds: <sounds.h>
+	    -added logic category separation in <logic.h>
+	    -officially implemented the settings option. <debug>
+	    -added a macro in <compiler.h> to allow verification of
+	     GLIBC's existence.
+	    -added a small macro to verify if the compiler being used
+	     is either GCC or CLANG.
+	    -added a huge range of options and settings to customize
+	     the library with.
+	    = there's more! also made some some small update for the
+	      big preparation to start <sort.h> and <esosort.h>
+
+	    = implemented two new tokens to the <attribs.h> header: "xsc_presume", and "xsc_assume".	
+	      these are for compatibility with GCC-attribute-like compilers and MSVC-attribute-like
+	      compilers.
+	      for gcc-like compilers when dealing with xsc_assume with gcc attributes it behaves like
+	      builtin-expect but if the compiler supports MSVC attributes the type is promoted to
+	      assume.
+	      while xsc_presume is fixed, and is just the standard gcc-expect if it doesn't support.
+	      MSVC then it won't do anything.
+	      
+	    = Officialized the use of <stdint.h>, now it can be used freely in the library development.
+	    = Updated the version system in <version.h>
+	    = implemented <compiler.h> macros to verify glibc existence.
+	    = Updated xscconf_ansi_escape to disable almost every single
+	      use of ansi escapes in the <debug> header.
+	
+	    = implemented internal data information, at <.../sub/scinfo.h>.
+	    = implemented the Super-C info card file used for updating internal
+	      information with the __FILE__ macro and compiler features.
+	      depending of which compiler you are using, this may not
+	      work at all. <SUPERCINF>
+
+
+	Changes: [~]
+	    -many functions in <stdcon.h> were reorganized.
+	    -changed the sub header folder name from '/s/...' to '/sub/...'
+	    -transfered all the function prototypes from <stdbasic.h>
+	     to their respective headers.
+	    -fixed a syntax mistake that prevented the os 
+	     version to not be identified properly. <.../sub/getos.h>
+	    -convertf() in <fadvance.h> is now called convf() for convenience.
+	    -swapped constructor IDs from <debug> to fix declaration issues
+	     (they are now 103 & 104)
+	    -'strcount' has been renamed to 'chrcount' while also adding a 'strcount'
+	     version for 'chrcount' that is still planned to be added in the future.
+	    -slightly organized some stuff in <debug>
+	    -changed the header name from <bFactory.h> to <binfactory.h>
+	    -organized a lot of macro names, (there's still a lot of ground
+	     to be covered, however.)
+	    -now there's an official category separation for all the headers:
+	     headers, libraries, and packages.
+	    -made 'XSCCONF_ANSI_ESCAPE' disable most colors at debug mode when set
+	     at '0'.
+	    -minor improvements in a good chunk of packages.
+	    -solved specific macro linking and fallback issues in <draws.h>
+	    -fixed delay issues caused by the accidental leftover of a 3 second
+	     sleep timer function at the windows intro in the main stdcon auto runner.
+	    -ported almost all of the comments in the library to fit the C89
+	     standard.
+
+	    = remodeled 'strg_cmpat()' to actually compare the string at a specified
+	      position.
+	    = minor improvements from many header files.
+
+
+	Removed [-]
+	    -some unused headers were simply cut-out from the final build.
+	     most of these were all from '/sub'.
+
+
+(The Library was Updated on 2/16/2026 to implement this instruction/log file.)

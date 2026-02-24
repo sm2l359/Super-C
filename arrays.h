@@ -14,14 +14,19 @@
     Experimental Package? no.
 **/
 
-#if __INLINE_COMMENT__
+/*
 //fun fact: all functions in here are O(n) or higher... (unless binary search is included.)
+*/
 
+#ifndef arrelm
+
+/*
 //arrelm, Also Known as "find the size of my array because C doesn't provide a way of doing it".
 //even with this macro, it doesn't help at all if your array size is bigger than the total elements in it.
-#endif
+*/
 
 #define arrelm(Array) sizeof(Array) / sizeof(* Array)
+#endif
 
 __attribs( xsc_nonull(1) xsc_format(printf, 1, 2) xsc_hot )
     int aprintf(const String restrict _STR, ...)

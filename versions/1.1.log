@@ -1,0 +1,10 @@
+//Additions:
+//-New Functions!
+//  +strswp()
+//  +chprint()
+
+//Changes:
+//  -bflip is now called bfl.
+//  -ColorAE() changed from 16 Color system to 256 Color system.
+//  -memprint() was re-done into the new function chprint().
+//  -other minor changes...

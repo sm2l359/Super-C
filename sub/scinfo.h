@@ -46,8 +46,8 @@
 #define _scifi_gthub_t char
 #define _scifi_lcnse_t char*
 
-#define __SCIFI_LICENSE  "GPL-3.0" /* gonna get it's own XSCINF later on. [R][C] */
-#define __SCIFI_GITHUB TRUE /* also gonna get it's own XSCINF later on. [R][C] */
+#define __SCIFI_LICENSE  "GPL-3.0"
+#define __SCIFI_GITHUB TRUE
 #define __SCIFI_RELEASE XSCINF_RELEASE
 
 #define __convr _sh_gblst = __SCIFI_VERS; \

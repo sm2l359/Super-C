@@ -22,7 +22,7 @@ typedef int stringplpl_int;
 
 stringplpl_string strcut(char * _Src, const char * _SubA, const char * _SubB); /* cuts everything between a substring and another substring. */
 stringplpl_string strchr_r(char * _Str, int _Val, int _inc); /* get everything before a character in a string. */
-stringplpl_string strbet(char * _Src, const char * _SubA, const char * _SubB); //get the substring between two characters in a string. */
+stringplpl_string strbet(char * _Src, const char * _SubA, const char * _SubB); /* get the substring between two characters in a string. */
 stringplpl_string strlwr(char * _Str); /* converts every uppercase-char in a string to lowercase. */
 stringplpl_string strupr(char * _Str); /* converts every lowercase-char in a string to uppercase. */
 stringplpl_string strswp(char * _Str); /* swaps the uppercase with the lowercase char-set. */

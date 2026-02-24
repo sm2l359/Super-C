@@ -56,13 +56,6 @@ void pclear(int _Sz) { /* (stands for provisional clear) */
 
 }
 
-/*
-//[C][R]
-//personal note: 1KB is entirely spent from this function, so attention on that one..
-//yeah, varidic functions can be size expensive.
-//thinking about removing / adapting this one.
-*/
-
 /* XSC "format" functions use '#' if there's no need to specify
     a "type" for the function.
 */
